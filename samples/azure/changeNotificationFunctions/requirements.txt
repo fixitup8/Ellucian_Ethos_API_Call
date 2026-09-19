@@ -1,2 +1,2 @@
 azure-functions
-EllucianEthosPythonClient==0.2.8
+EthosClient==0.2.8

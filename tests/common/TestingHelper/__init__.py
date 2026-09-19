@@ -1,3 +1,0 @@
-
-
-from .GenerateSampleResponses import getPersonMockResult, getMimimumResourceMockResult, getPersonNotFoundMockResult, getPersonHoldMockResult

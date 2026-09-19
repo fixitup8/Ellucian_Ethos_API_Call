@@ -9,27 +9,30 @@ and they may not be wrapped in the way that is requried. There are functions tha
 - sendPutRequest
 - sendDeleteRequest
 
-Each takes a loginsession argument. If supplied the loginsession will add the authorization header to calls and handle
-retrying 401 responses. If loginsession is passed as "None" then no headers are added.
+Each takes a loginSession argument. If supplied the loginSession will add the authorization header to calls and handle
+retrying 401 responses. If loginSession is passed as "None" then no headers are added.
  
 You also need to supply an injectHeadersFn function. This function can be used to add what ever header is required to
 the API call. See the examples for mode details.
+
+These four are the ones EthosAPIClient inherits directly from the underlying PythonAPIClientBase library, so
+(unlike the rest of the library, e.g. get_resource, create_resource) their argument names stay camelCase.
 
 The following examples show calling the API directly whilst still using the library to handle API security: 
 
 ## Example get Request
 
 ```
-exampleURL = "/api/persons/SOMEPERSONGUID"
-exampleVersion = "6"
+example_url = "/api/persons/SOMEPERSONGUID"
+example_version = "6"
 
-def sampleInjectHeaderFunctionForGet(headers):
-  headers["Accept"] = "application/vnd.hedtech.integration.v" + exampleVersion + "+json"
+def sample_inject_header_function_for_get(headers):
+  headers["Accept"] = "application/vnd.hedtech.integration.v" + example_version + "+json"
 
-result = ethosClient.sendGetRequest(
-  url=exampleURL,
-  loginSession=loginSession,
-  injectHeadersFn=sampleInjectHeaderFunctionForGet
+result = ethos_client.sendGetRequest(
+  url=example_url,
+  loginSession=login_session,
+  injectHeadersFn=sample_inject_header_function_for_get
 )
 
 print(result.status_code)
@@ -40,19 +43,19 @@ print(result.content)
 ## Example Post Request
 
 ```
-exampleURL = "/api/persons/SOMEPERSONGUID"
+example_url = "/api/persons/SOMEPERSONGUID"
 
-def sampleInjectHeaderFunctionForPost(headers):
-    headers["Accept"] = "application/vnd.hedtech.integration.v" + exampleVersion + "+json"
-    headers["Content-Type"] = "application/vnd.hedtech.integration.v" + exampleVersion + "+json"
+def sample_inject_header_function_for_post(headers):
+    headers["Accept"] = "application/vnd.hedtech.integration.v" + example_version + "+json"
+    headers["Content-Type"] = "application/vnd.hedtech.integration.v" + example_version + "+json"
 
-postDict = { "TODO": "PutDataHere" }
+post_data = { "TODO": "PutDataHere" }
 
-result = ethosClient.sendPostRequest(
-    url=exampleURL,
-    loginSession=loginSession,
-    injectHeadersFn=sampleInjectHeaderFunctionForPost,
-    data=json.dumps(postDict)
+result = ethos_client.sendPostRequest(
+    url=example_url,
+    loginSession=login_session,
+    injectHeadersFn=sample_inject_header_function_for_post,
+    data=json.dumps(post_data)
 )
 
 print(result.status_code)
@@ -62,20 +65,20 @@ print(result.content)
 ## Example Put Request
 
 ```
-exampleURL = "/api/persons/SOMEPERSONGUID"
-exampleVersion = "6"
+example_url = "/api/persons/SOMEPERSONGUID"
+example_version = "6"
 
-def sampleInjectHeaderFunctionForPut(headers):
-  headers["Accept"] = "application/vnd.hedtech.integration.v" + exampleVersion + "+json"
-  headers["Content-Type"] = "application/vnd.hedtech.integration.v" + exampleVersion + "+json"
+def sample_inject_header_function_for_put(headers):
+  headers["Accept"] = "application/vnd.hedtech.integration.v" + example_version + "+json"
+  headers["Content-Type"] = "application/vnd.hedtech.integration.v" + example_version + "+json"
 
-putDict = { "TODO": "PutDataHere" }
+put_data = { "TODO": "PutDataHere" }
 
-result = ethosClient.sendPutRequest(
-  url=exampleURL,
-  loginSession=loginSession,
-  injectHeadersFn=sampleInjectHeaderFunctionForPut,
-  data=json.dumps(putDict)
+result = ethos_client.sendPutRequest(
+  url=example_url,
+  loginSession=login_session,
+  injectHeadersFn=sample_inject_header_function_for_put,
+  data=json.dumps(put_data)
 )
 
 print(result.status_code)
@@ -85,14 +88,14 @@ print(result.content)
 
 ## Example Delete Request
 
-For delete requests in Ethos no extra headers are required so the injectHEadersFn can be set to None.
+For delete requests in Ethos no extra headers are required so the injectHeadersFn can be set to None.
 
 ```
-exampleURL = "/api/persons/SOMEPERSONGUID"
+example_url = "/api/persons/SOMEPERSONGUID"
 
-result = ethosClient.sendDeleteRequest(
-    url=exampleURL,
-    loginSession=loginSession,
+result = ethos_client.sendDeleteRequest(
+    url=example_url,
+    loginSession=login_session,
     injectHeadersFn=None
 )
 
@@ -113,6 +116,6 @@ python structure, an example for doing this is:
 if result.status_code != 200:
     raise Exception("An API Error has occured")
 
-resultDict = json.loads(result.content)
+result_data = json.loads(result.content)
 
 ```

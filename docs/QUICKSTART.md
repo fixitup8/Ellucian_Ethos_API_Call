@@ -5,18 +5,8 @@ This page aims to show a rough and ready quick tour of the libraries basic funct
 All the following examples require that you run the following setup:
 
 ```
-pip3 install EllucianEthosPythonClient
+pip3 install EthosClient
 ```
-
-## Check library version
-
-Run a python3 REPL console and type the following:
-
-```
-import EllucianEthosPythonClient
-print(EllucianEthosPythonClient.__version__)
-```
-This should output the version of the library that is installed. (If this dosen't work check you ran the pip install command)
 
 ## Call an API to fetch a resource, change it and save back to Ethos
 
@@ -26,44 +16,44 @@ Start a python3 REPL console and run the following to setup the varaibles requir
 persons resource.
  
 ```
-ethosBaseURL = "ETHOS BASE URL e.g. https://integrate.elluciancloud.ie no trailing slash"
-ethosAPIKey = "ETHOS APPLICATION API KEY"
-resourceName = "persons"
-personResourceID = "A_PERSON_GuiD"
+ethos_base_url = "ETHOS BASE URL e.g. https://integrate.elluciancloud.ie no trailing slash"
+ethos_api_key = "ETHOS APPLICATION API KEY"
+resource_name = "persons"
+person_resource_id = "A_PERSON_GuiD"
 ```
 (Replace the values above with values from your environment)
 
-Note: In a real APP ethosAPIKey will be read from some sort of secure store, and ethosBaseURL should be a configurable 
+Note: In a real APP ethos_api_key will be read from some sort of secure store, and ethos_base_url should be a configurable 
 paramater
 
 Now create client and login session objects:
 ```
-import EllucianEthosPythonClient
-ethosClient = EllucianEthosPythonClient.EllucianEthosAPIClient(baseURL=ethosBaseURL)
-loginSession = ethosClient.getLoginSessionFromAPIKey(apiKey=ethosAPIKey)
+import EthosClient
+ethos_client = EthosClient.EthosAPIClient(base_url=ethos_base_url)
+login_session = ethos_client.get_login_session_from_api_key(api_key=ethos_api_key)
 ```
 
 Now you can call the API to get a resource:
 ```
-person = ethosClient.getResource(
-  loginSession=loginSession,
-  resourceName=resourceName,
-  resourceID=personResourceID,
+person = ethos_client.get_resource(
+  login_session=login_session,
+  resource_name=resource_name,
+  resource_id=person_resource_id,
   version=None
 )
 ```
 The version paramater is optional and if you want to retrieve a specific version you can supply a string such as "12.1.0"
 
-If the resource is not found the getResource function will return None.
+If the resource is not found the get_resource function will return None.
 Otherwise it will return an Resource Wrapper Object. You can print the details of the object you returned as follows:
 
 ```
 print("API version from response:", person.version)
-print("GUID of returned resource=", person.resourceID)
-print(person.dict)
+print("GUID of returned resource=", person.resource_id)
+print(person.data)
 ```
 
-Most getResource calls will return a result class of BaseResourceWrapper however if the resource name and version is 
+Most get_resource calls will return a result class of BaseResourceWrapper however if the resource name and version is 
 recognised by the library the object returned will be a class designed for that object and version. This class may provide 
 special operations for that resource type. You can find the class that was returned with the following:
 
@@ -71,14 +61,14 @@ special operations for that resource type. You can find the class that was retur
 print("Resource Type Object=", type(person).__name__)
 ```
                           
-See [ResourceWrappers](/EllucianEthosPythonClient/ResourceWrappers/README.md) for information.
+See [Resource wrappers](../EthosClient/resources/README.md) for information.
 
-You can make a change to the resource by altering the dict structure. The following code adds a 2 to the end of the
+You can make a change to the resource by altering the data structure. The following code adds a 2 to the end of the
 persons last name then calls the api to save it back to Ethos:
 ```
-print("Lastname is currently " + person.dict["names"][0]["lastName"])
-person.dict["names"][0]["lastName"] = person.dict["names"][0]["lastName"] + "2"
-person.save(loginSession=loginSession)
+print("Lastname is currently " + person.data["names"][0]["lastName"])
+person.data["names"][0]["lastName"] = person.data["names"][0]["lastName"] + "2"
+person.save(login_session=login_session)
 ```
 
 One thing to remember about this method is that the entire person record is saved back to Ethos. If an hour or two has
@@ -92,20 +82,20 @@ resources 25 at a time using the iterator. (It stops after 123 so it won't run f
 
 You can run this in the REPL:
 ```
-personHoldIterator = ethosClient.getResourceIterator(
-  loginSession=loginSession,
-  resourceName="person-holds",
+person_hold_iterator = ethos_client.get_resource_iterator(
+  login_session=login_session,
+  resource_name="person-holds",
   params=None,
   version=None,
-  pageSize=25
+  page_size=25
 )
 
-max = 123
+max_to_print = 123
 cur = 0
-for personHold in personHoldIterator:
-  print("personHold", personHold.dict["person"]["id"], personHold.dict["startOn"])
+for person_hold in person_hold_iterator:
+  print("personHold", person_hold.data["person"]["id"], person_hold.data["startOn"])
   cur += 1
-  if cur > max:
+  if cur > max_to_print:
     break
 ```
 
@@ -117,30 +107,30 @@ The following example creates a new person hold. This can be run in the REPL onc
 person hold category are filled in:
 
 ```
-personGUID="TO BE ENTERED"
-personHoldCategoryGUID="TO BE ENTERED"
+person_guid = "TO BE ENTERED"
+person_hold_category_guid = "TO BE ENTERED"
 
-personHoldToCreate = {
+person_hold_to_create = {
     'endOn': '2099-12-31T00:00:00Z',
-    'person': {'id': personGUID},
+    'person': {'id': person_guid},
     'startOn': '2020-01-17T00:00:00Z',
     'type': {
       'category': 'academic',
       'detail': {
-        'id': personHoldCategoryGUID
+        'id': person_hold_category_guid
       }
     }
   }
 
-createdPersonHold = ethosClient.createResource(
-  loginSession=loginSession,
-  resourceName="person-holds",
-  resourceDict=personHoldToCreate,
+created_person_hold = ethos_client.create_resource(
+  login_session=login_session,
+  resource_name="person-holds",
+  resource_data=person_hold_to_create,
   version="6"
 )
 
-print("Created a new person-hold resource with id ", createdPersonHold.version)
-print("GUID of returned resource ", createdPersonHold.resourceID)
+print("Created a new person-hold resource with id ", created_person_hold.version)
+print("GUID of returned resource ", created_person_hold.resource_id)
 
 ```
 
@@ -149,17 +139,17 @@ print("GUID of returned resource ", createdPersonHold.resourceID)
 There are two ways to delete a resource. Firstly you can use the delete method from a returned resource.
 The following examples delete the resource created in the previous example:
 ```
-createdPersonHold.delete(loginSession=loginSession)
+created_person_hold.delete(login_session=login_session)
 ```
 
 The disadvantage to this method is that you must first query the resource to obtain an object.
-Another method to delete a resource requires just the resoruce guid:
+Another method to delete a resource requires just the resource guid:
 ```
-recourceGUIDToBeDeleted = createdPersonHold.resourceID
-ethosClient.deleteResource(
-  loginSession=loginSession,
-  resourceName="person-holds",
-  resourceID=recourceGUIDToBeDeleted
+resource_guid_to_be_deleted = created_person_hold.resource_id
+ethos_client.delete_resource(
+  login_session=login_session,
+  resource_name="person-holds",
+  resource_id=resource_guid_to_be_deleted
 )
 ```
 
@@ -174,5 +164,3 @@ the security. See [direct call guide](DIRECTCALL.md) for examples.
 This quick start guide has stepped through most of the major features of the library.
 The library has also an implementation of a poller which can be used to call the publish API and retrieve change 
 notifications it is explained in more detail here - [Poller Guide](POLLERGUIDE.md).
-
-

@@ -1,7 +1,6 @@
-from setuptools import setup
-import versioneer
+from setuptools import find_packages, setup
 
-#Dependancy lists maintained here and in tox.ini
+# Dependency lists maintained here and in tox.ini
 sp_install_requires = [
   'requests==2.31.0',
   'pytz==2019.3',
@@ -9,8 +8,7 @@ sp_install_requires = [
   'PythonAPIClientBase==0.0.15'
 ]
 sp_tests_require = [
-  'nose==1.3.7',
-  'python_Testing_Utilities==0.1.10'
+  'pytest'
 ]
 
 all_require = sp_install_requires + sp_tests_require
@@ -18,18 +16,17 @@ all_require = sp_install_requires + sp_tests_require
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-setup(name='EllucianEthosPythonClient',
-      version=versioneer.get_version(),
-      cmdclass=versioneer.get_cmdclass(),
+setup(name='EthosClient',
+      version='0.0.0',
       description='Python package which provides Ellucian Ethos Client',
       long_description=long_description,
       long_description_content_type="text/markdown",
-      url='https://github.com/rmetcalf9/EllucianEthosPythonClient',
-      author='Robert Metcalf',
-      author_email='rmetcalf9@googlemail.com',
+      url='https://github.com/dchang/EthosClient',
+      author='DChang',
+      author_email='chang818@gmail.com',
       license='MIT',
-      packages=['EllucianEthosPythonClient', 'EllucianEthosPythonClient.ResourceWrappers'],
+      python_requires='>=3.10',
+      packages=find_packages(include=['EthosClient', 'EthosClient.*']),
       zip_safe=False,
       install_requires=sp_install_requires,
-#      tests_require=sp_tests_require,
       include_package_data=True)
