@@ -34,7 +34,7 @@ class TestPoller(Helpers):
             poller_queue=poller_queue
         )
 
-        with self.assertRaises(EthosClient.CanNotStartChangeNotificationPollerTwiceException):
+        with self.assertRaises(EthosClient.PollerAlreadyRunningException):
             self.ethos_client.start_change_notification_poller_thread(
                 login_session=None,
                 frequency=60,

@@ -3,7 +3,7 @@ from PythonAPIClientBase import LoginSession
 import requests
 
 
-class EthosLoginSessionBasedOnAPIKey(LoginSession):
+class ApiKeyLoginSession(LoginSession):
     """Exchanges an Ethos application API key for a short-lived bearer token.
 
     injectHeaders() and refresh() are required override names - they're called by

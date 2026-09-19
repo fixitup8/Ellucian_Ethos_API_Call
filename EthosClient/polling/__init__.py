@@ -2,13 +2,13 @@
 
 - worker_thread.py: WorkerThread - generic run-on-an-interval background thread.
 - change_notification_poller.py: the two poller thread classes clients actually use,
-  EthosChangeNotificationPollerThreadQueueMode and ...FunctionMode.
+  QueueModePollerThread and ...FunctionMode.
 """
 from .change_notification_poller import (
     EthosChangeNotificationPollerThread,
     EthosChangeNotificationPollerThreadExceptionClass,
-    EthosChangeNotificationPollerThreadFunctionMode,
-    EthosChangeNotificationPollerThreadQueueMode,
+    FunctionModePollerThread,
+    QueueModePollerThread,
 )
 from .worker_thread import WorkerThread, WorkerThreadExceptionClass, get_next_worker_time
 
@@ -18,6 +18,6 @@ __all__ = [
     "get_next_worker_time",
     "EthosChangeNotificationPollerThread",
     "EthosChangeNotificationPollerThreadExceptionClass",
-    "EthosChangeNotificationPollerThreadQueueMode",
-    "EthosChangeNotificationPollerThreadFunctionMode",
+    "QueueModePollerThread",
+    "FunctionModePollerThread",
 ]

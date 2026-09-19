@@ -8,13 +8,13 @@ import json
 
 import PythonAPIClientBase
 
-from .auth      import EthosLoginSessionBasedOnAPIKey
+from .auth      import ApiKeyLoginSession
 from .iterators import ChangeNotificationIterator, ListBasedResourceIterator, ResourceIterator
-from .polling   import EthosChangeNotificationPollerThreadFunctionMode, EthosChangeNotificationPollerThreadQueueMode
+from .polling   import FunctionModePollerThread, QueueModePollerThread
 from .resources import get_resource_wrapper
 
 
-class CanNotStartChangeNotificationPollerTwiceException(Exception):
+class PollerAlreadyRunningException(Exception):
     pass
 
 
@@ -46,7 +46,7 @@ class EthosAPIClient(PythonAPIClientBase.APIClientBase):
         self.change_notification_poller_thread = None
 
     def get_login_session_from_api_key(self, api_key):
-        return EthosLoginSessionBasedOnAPIKey(api_client=self, api_key=api_key)
+        return ApiKeyLoginSession(api_client=self, api_key=api_key)
 
     def _get_resource_raw(self, login_session, resource_name, resource_id, version=None):
         def inject_header_fn(headers):
@@ -172,8 +172,8 @@ class EthosAPIClient(PythonAPIClientBase.APIClientBase):
         max_requests: maximum number of pages to request per fetch.
         """
         if self.change_notification_poller_thread is not None:
-            raise CanNotStartChangeNotificationPollerTwiceException()
-        self.change_notification_poller_thread = EthosChangeNotificationPollerThreadQueueMode(
+            raise PollerAlreadyRunningException()
+        self.change_notification_poller_thread = QueueModePollerThread(
             client_api_instance=self,
             login_session   =login_session,
             frequency       =frequency,
@@ -197,8 +197,8 @@ class EthosAPIClient(PythonAPIClientBase.APIClientBase):
         reliably as each message is handled. See docs/POLLERGUIDE.md.
         """
         if self.change_notification_poller_thread is not None:
-            raise CanNotStartChangeNotificationPollerTwiceException()
-        self.change_notification_poller_thread = EthosChangeNotificationPollerThreadFunctionMode(
+            raise PollerAlreadyRunningException()
+        self.change_notification_poller_thread = FunctionModePollerThread(
             client_api_instance=self,
             login_session   =login_session,
             frequency       =frequency,

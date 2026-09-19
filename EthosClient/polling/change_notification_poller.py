@@ -14,8 +14,8 @@ class EthosChangeNotificationPollerThreadExceptionClass(Exception):
 class EthosChangeNotificationPollerThread(WorkerThread):
     """Base poller thread - fetches batches of change notifications on each tick.
 
-    Not used directly; use EthosChangeNotificationPollerThreadQueueMode or
-    EthosChangeNotificationPollerThreadFunctionMode, which provide process_message().
+    Not used directly; use QueueModePollerThread or
+    FunctionModePollerThread, which provide process_message().
     """
 
     client_api_instance = None
@@ -61,7 +61,7 @@ class EthosChangeNotificationPollerThread(WorkerThread):
         pass  # overridden by subclasses
 
 
-class EthosChangeNotificationPollerThreadQueueMode(EthosChangeNotificationPollerThread):
+class QueueModePollerThread(EthosChangeNotificationPollerThread):
     """Poller that pushes each change notification onto a queue.Queue for you to drain."""
 
     poller_queue = None
@@ -81,7 +81,7 @@ class EthosChangeNotificationPollerThreadQueueMode(EthosChangeNotificationPoller
         self.poller_queue.put(change_notification)
 
 
-class EthosChangeNotificationPollerThreadFunctionMode(EthosChangeNotificationPollerThread):
+class FunctionModePollerThread(EthosChangeNotificationPollerThread):
     """Poller that calls a supplied function for each change notification.
 
     Useful when you need to persist last_processed_id reliably (e.g. to disk) as each
