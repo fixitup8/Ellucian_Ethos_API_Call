@@ -7,8 +7,8 @@ sys.path.insert(0, project_root)
 
 import EthosClient
 
-ethos_base_url = os.environ["ETHOSBASEURL"]
-ethos_app_api_key = os.environ["ICETHOSDEVAPIKEY"]
+ethos_base_url           = os.environ["ETHOSBASEURL"]
+ethos_app_api_key        = os.environ["ICETHOSDEVAPIKEY"]
 
 person_resource_id = "01e5f1c3-d0f0-445c-a095-c2884cd6fe4b"
 

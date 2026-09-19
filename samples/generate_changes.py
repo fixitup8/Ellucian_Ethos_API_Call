@@ -15,8 +15,8 @@ sys.path.insert(0, project_root)
 
 import EthosClient
 
-ethos_base_url = os.environ["ETHOSBASEURL"]
-ethos_api_key = os.environ["ICETHOSDEVAPIKEY"]
+ethos_base_url           = os.environ["ETHOSBASEURL"]
+ethos_api_key            = os.environ["ICETHOSDEVAPIKEY"]
 
 change_delay_time = 3
 

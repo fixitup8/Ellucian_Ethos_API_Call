@@ -11,7 +11,7 @@ sys.path.insert(0, project_root)
 
 import EthosClient
 
-ethos_base_url = "https://integrate.elluciancloud.com"
+ethos_base_url           = "https://integrate.elluciancloud.com"
 ethos_poller_app_api_key = os.environ["ETHOSAPIKEY"]
 
 

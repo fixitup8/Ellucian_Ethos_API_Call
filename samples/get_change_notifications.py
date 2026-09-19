@@ -8,7 +8,7 @@ sys.path.insert(0, project_root)
 
 import EthosClient
 
-ethos_base_url = os.environ["ETHOSBASEURL"]
+ethos_base_url           = os.environ["ETHOSBASEURL"]
 ethos_poller_app_api_key = os.environ["ETHOSPOLLERAPIKEY"]
 
 ethos_client = EthosClient.EthosAPIClient(base_url=ethos_base_url)

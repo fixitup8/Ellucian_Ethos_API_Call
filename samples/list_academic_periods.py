@@ -7,11 +7,11 @@ sys.path.insert(0, project_root)
 
 import EthosClient
 
-ethos_base_url = os.environ["ETHOSBASEURL"]
-ethos_app_api_key = os.environ["ICETHOSDEVAPIKEY"]
+ethos_base_url      = os.environ["ETHOSBASEURL"]
+ethos_app_api_key   = os.environ["ICETHOSDEVAPIKEY"]
 
 
-ethos_client = EthosClient.EthosAPIClient(base_url=ethos_base_url)
+ethos_client  = EthosClient.EthosAPIClient(base_url=ethos_base_url)
 login_session = ethos_client.get_login_session_from_api_key(api_key=ethos_app_api_key)
 
 print("Start")
@@ -34,8 +34,8 @@ if is_yes(user_input):
 academic_period_iterator = ethos_client.get_resource_iterator(
     login_session=login_session,
     resource_name="academic-periods",
-    version=None,
-    params=params,
+    version  =None,
+    params   =params,
     page_size=25
 )
 
